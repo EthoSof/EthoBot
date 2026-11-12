@@ -25,11 +25,11 @@ pkg install -y git && git clone https://github.com/EthoSof/EthoBot.git && cd Eth
 > 5. Para volver a iniciarlo en cualquier momento: `bash scripts/termux-start.sh` (Guía completa: [docs/TERMUX.md](docs/TERMUX.md)).
 
 ### 💻 2. Windows (CMD / Símbolo del Sistema o PowerShell)
-**Comando rápido en 1 sola línea:**
+**Comando rápido en 1 sola línea (primera vez):**
 ```cmd
 git clone https://github.com/EthoSof/EthoBot.git && cd EthoBot && npm install && npm start
 ```
-*(O descarga el proyecto, entra a la carpeta y haz doble clic en **`iniciar.bat`**)*
+*(Si ya tenías la carpeta clonada: `cd EthoBot && git pull && npm start`, o haz doble clic en **`iniciar.bat`**)*
 
 > **¿Cómo funciona?**
 > 1. Al ejecutar `npm start` (o `iniciar.bat`), la terminal te preguntará: **1) Código de 8 dígitos** o **2) Código QR**.
