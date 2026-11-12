@@ -34,7 +34,7 @@ export function ensureFfmpegInPath() {
 }
 /** Carpeta temporal: la del sistema y, si no se puede escribir (Termux sin TMPDIR), data/tmp. */
 function pickTmp() {
-  const candidates = [path.join(os.tmpdir(), 'etho-bot'), path.join(process.cwd(), 'data', 'tmp')];
+  const candidates = [path.join(os.tmpdir(), 'tanjiro-bot'), path.join(process.cwd(), 'data', 'tmp')];
   for (const dir of candidates) {
     try { fs.mkdirSync(dir, { recursive: true }); fs.accessSync(dir, fs.constants.W_OK); return dir; } catch { /* siguiente */ }
   }

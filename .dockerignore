@@ -8,6 +8,7 @@ data/session
 data/sessions
 data/*.db
 data/.auth_secret
+data/backups
 data/*.db-*
 data/*.sqlite*
 *.log

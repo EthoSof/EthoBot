@@ -1,13 +1,34 @@
 #!/data/data/com.termux/files/usr/bin/env bash
-# Detiene Etho Bot y libera el wake-lock de Termux.
+# ==============================================================
+# Detiene Tanjiro Bot y libera el wake-lock de Termux
+# Uso: bash scripts/termux-stop.sh
+# ==============================================================
 cd "$(dirname "$0")/.."
-if [ -f data/etho.pid ]; then
-  PID=$(cat data/etho.pid)
-  # npm lanza node como hijo: se detiene el grupo completo
-  pkill -P "$PID" 2>/dev/null
-  kill "$PID" 2>/dev/null && echo "Etho Bot detenido."
-  rm -f data/etho.pid
+
+STOPPED=0
+
+for pid_file in data/bot.pid data/tanjiro.pid data/etho.pid; do
+  if [ -f "$pid_file" ]; then
+    PID=$(cat "$pid_file" 2>/dev/null | tr -d '\r\n')
+    if [ -n "$PID" ]; then
+      pkill -P "$PID" 2>/dev/null || true
+      kill "$PID" 2>/dev/null || true
+      STOPPED=1
+    fi
+    rm -f "$pid_file"
+  fi
+done
+
+# Búsqueda adicional de procesos huérfanos de Node en caso de que el PID haya cambiado
+pkill -f "node.*src/index.js" 2>/dev/null && STOPPED=1 || true
+
+if [ "$STOPPED" -eq 1 ]; then
+  echo "✅ Tanjiro Bot detenido correctamente."
 else
-  echo "No hay un proceso guardado."
+  echo "ℹ️ No se detectó ningún proceso activo de Tanjiro Bot."
 fi
-command -v termux-wake-unlock >/dev/null 2>&1 && termux-wake-unlock
+
+# Liberar Wake Lock para ahorrar batería
+if command -v termux-wake-unlock >/dev/null 2>&1; then
+  termux-wake-unlock || true
+fi

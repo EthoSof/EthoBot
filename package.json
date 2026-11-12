@@ -5,19 +5,19 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "start": "node --max-old-space-size=1024 src/index.js",
-    "dev": "node --max-old-space-size=1024 --watch src/index.js",
+    "start": "node --experimental-sqlite --max-old-space-size=1024 src/index.js",
+    "dev": "node --experimental-sqlite --max-old-space-size=1024 --watch src/index.js",
     "check": "node scripts/check.js",
     "banner": "node scripts/banner.js",
     "test": "node scripts/test-format.js && node scripts/test-ai-quality.js && node scripts/test-ui.js && node scripts/test-plans.js && node scripts/test-accounts.js && node scripts/test-billing.js && node scripts/test-routes.js && node scripts/test-maintenance.js",
     "smoke": "node scripts/smoke.js",
-    "start:termux": "node --max-old-space-size=512 src/index.js",
+    "start:termux": "node --experimental-sqlite --max-old-space-size=512 src/index.js",
     "termux:setup": "bash scripts/termux-setup.sh",
     "termux:start": "bash scripts/termux-start.sh",
     "termux:stop": "bash scripts/termux-stop.sh"
   },
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc14",

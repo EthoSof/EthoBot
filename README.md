@@ -133,3 +133,5 @@ Panel disponible en: **`http://localhost:3000`**
 4. En la tarjeta creada, haz clic en **`Escanear QR`**.
 5. Abre **WhatsApp** en tu teléfono > **Dispositivos vinculados** > **Vincular dispositivo** y escanea el código en pantalla.
 6. ¡Listo! El bot cambiará su estado a **En Línea** y comenzará a responder.
+
+> En un servidor sin navegador (VPS, Docker, Termux) el QR también se imprime en la consola/logs; desactívalo con `QR_IN_TERMINAL=false`.

@@ -9,7 +9,7 @@ echo.
 node -v >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Node.js no está instalado o no se encuentra en el PATH.
-    echo Por favor descarga e instala Node.js 20+ desde https://nodejs.org/
+    echo Por favor descarga e instala Node.js 22.13+ (LTS) desde https://nodejs.org/
     pause
     exit /b 1
 )

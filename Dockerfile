@@ -21,7 +21,7 @@ ENV NODE_ENV=production \
 COPY package.json package-lock.json* ./
 # Baileys depende de libsignal vía GitHub: forzar HTTPS (no hay llaves SSH en el build)
 RUN git config --global url."https://github.com/".insteadOf ssh://git@github.com/ \
- && npm install --omit=dev --no-audit --no-fund
+ && npm ci --omit=dev --no-audit --no-fund
 
 COPY . .
 RUN mkdir -p /app/data/sessions
@@ -31,4 +31,4 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=25s --retries=3 \
   CMD curl -fsS http://localhost:${PORT:-3000}/health || exit 1
 
-CMD ["npm", "start"]
+CMD ["node", "--max-old-space-size=1024", "src/index.js"]

@@ -22,7 +22,8 @@ class SQLiteWrapper {
       } catch (err) {
         console.warn('[db] No se pudo abrir SQLite en', filePath, err.message);
         try {
-          this._db = new DatabaseSync('/tmp/bot.db');
+          const fallbackPath = path.join(os.tmpdir(), 'bot.db');
+          this._db = new DatabaseSync(fallbackPath);
           return;
         } catch {
           try {
@@ -103,8 +104,8 @@ class SQLiteWrapper {
 try {
   fs.mkdirSync(path.dirname(config.dbPath), { recursive: true });
 } catch (e) {
-  config.dbPath = '/tmp/bot.db';
-  try { fs.mkdirSync('/tmp', { recursive: true }); } catch {}
+  config.dbPath = path.join(os.tmpdir(), 'bot.db');
+  try { fs.mkdirSync(os.tmpdir(), { recursive: true }); } catch {}
 }
 
 export const db = new SQLiteWrapper(config.dbPath);

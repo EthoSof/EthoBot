@@ -1479,7 +1479,8 @@ export function startServer(customPort = null) {
   return new Promise((resolve, reject) => {
     const server = app.listen(p, host, () => {
       console.log(`\n======================================================`);
-      console.log(`[SERVIDOR] PANEL DE CONTROL DISPONIBLE: http://${host}:${p}`);
+      const shownHost = host === '0.0.0.0' ? 'localhost' : host;
+      console.log(`[SERVIDOR] PANEL DE CONTROL DISPONIBLE: ${process.env.PUBLIC_URL || `http://${shownHost}:${p}`}`);
       console.log(`======================================================\n`);
       resolve(server);
     });

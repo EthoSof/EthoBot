@@ -1,48 +1,58 @@
-# Ejecutar Etho Bot en Termux (Android)
+# Ejecutar Tanjiro Bot en Termux (Android)
 
-Funciona con Termux instalado desde **F-Droid** (la versión de Play Store está desactualizada). Necesitas Node.js 22.13 o superior, que el script instala solo.
+Funciona con Termux instalado preferiblemente desde **F-Droid** (la versión de Google Play Store está obsoleta).
 
-## Instalación
+## Instalación en 1 paso
+
+Dentro de Termux, ejecuta el comando de instalación automática:
 
 ```bash
-pkg install -y git
-git clone https://github.com/EthoSof/EthoBot.git
-cd EthoBot
+pkg install -y git && git clone https://github.com/EthoSof/EthoBot.git && cd EthoBot
 bash scripts/termux-setup.sh
 ```
 
-El script instala Node.js, git, ffmpeg y las dependencias, crea el `.env` con una clave de sesión y una contraseña de administrador aleatorias, y deja el panel solo en el teléfono (`HOST=127.0.0.1`).
+El script se encarga de:
+1. Instalar y configurar Node.js, git, ffmpeg, python y utilidades.
+2. Resolver automáticamente cualquier conflicto previo de paquetes (`nodejs-lts`).
+3. Instalar las dependencias de Node optimizadas para Android (sin binarios pesados ni módulos nativos innecesarios).
+4. Generar el archivo `.env` con contraseñas seguras y dejar el panel listo en `http://localhost:3000`.
 
-## Uso diario
+---
+
+## Comandos de Uso Diario
 
 | Acción | Comando |
 | --- | --- |
-| Iniciar en segundo plano | `bash scripts/termux-start.sh` |
-| Ver registros | `tail -f logs/etho.log` |
-| Detener | `bash scripts/termux-stop.sh` |
-| Iniciar viendo la consola | `bash scripts/termux-start.sh --foreground` |
+| **Iniciar en segundo plano** | `bash scripts/termux-start.sh` |
+| **Ver registros en vivo (logs)** | `tail -f logs/bot.log` |
+| **Iniciar en consola (primer plano)** | `bash scripts/termux-start.sh --foreground` |
+| **Detener el bot** | `bash scripts/termux-stop.sh` |
 
-El panel está en `http://localhost:3000`, desde el navegador del mismo teléfono.
+El panel web estará disponible en `http://localhost:3000` desde el navegador de tu teléfono.
+
+---
 
 ## Vincular WhatsApp
 
-No puedes escanear un QR que está en la misma pantalla del teléfono. Al crear el bot, elige **vincular con código** e ingresa el número (con código de país, sin `+`). El panel muestra un código de 8 dígitos: en WhatsApp ve a *Dispositivos vinculados → Vincular con el número de teléfono* e ingrésalo. También puedes abrir el panel desde otro dispositivo si defines `HOST=0.0.0.0` en `.env` (queda abierto a tu red local).
+Como no puedes escanear un código QR desde la misma pantalla del teléfono:
+1. Abre `http://localhost:3000` en tu navegador.
+2. Al añadir o editar tu bot, selecciona la opción **Vincular con código**.
+3. Ingresa tu número de teléfono (con código de país, sin signos ni espacios, ej: `573001234567`).
+4. El panel generará un código de 8 dígitos.
+5. En WhatsApp ve a: **Ajustes / Configuración → Dispositivos vinculados → Vincular con número de teléfono** e introduce el código.
 
-## Que Android no lo cierre
+---
 
-- Ajustes de Android → Aplicaciones → Termux → Batería → **Sin restricciones**.
-- Instala **Termux:API** (F-Droid) y `pkg install termux-api`: `termux-start.sh` usa `termux-wake-lock` para mantener la CPU despierta con la pantalla apagada.
-- Mantén una notificación de Termux activa (no la deslices fuera).
+## Evitar que Android cierre Termux
 
-## Diferencias con un servidor normal
+Para que el bot funcione 24/7 sin interrupciones:
+1. **Ajustes de Android → Aplicaciones → Termux → Batería**: ponlo en **Sin restricciones**.
+2. Instala la aplicación **Termux:API** (desde F-Droid) y el script usará `termux-wake-lock` automáticamente para mantener la CPU activa con la pantalla apagada.
+3. No deslices ni cierres la notificación permanente de Termux en la barra de estado.
 
-- **ffmpeg**: se usa el del sistema (`pkg install ffmpeg`), no `ffmpeg-static`. Puedes forzar otra ruta con `FFMPEG_PATH`.
-- **Stickers**: `wa-sticker-formatter` necesita `sharp`, que no existe en Android. Se convierte con ffmpeg a WebP 512x512; el sticker sale **sin** nombre de paquete ni autor.
-- **Descargas de video/audio** (`yt-dlp`): opcional, `pkg install yt-dlp`.
-- **Memoria**: `npm run start:termux` limita Node a 512 MB. Con 4 GB de RAM o menos, deja `MAX_ONLINE_BOTS` en 2 o 3 en `.env`.
-- **Pagos con Stripe**: el teléfono no recibe webhooks desde internet. Para cobrar usa un servidor público (ver `docs/DEPLOY.md`) o un túnel (`pkg install cloudflared`).
+---
 
-## Actualizar
+## Actualizar a la última versión
 
 ```bash
 bash scripts/termux-stop.sh
@@ -50,10 +60,3 @@ git pull
 npm install --omit=dev --omit=optional --ignore-scripts
 bash scripts/termux-start.sh
 ```
-
-## Problemas frecuentes
-
-- **`npm install` falla en libsignal o baileys**: falta git. Ejecuta `pkg install git` y repite.
-- **`Se necesita Node.js 22.13`**: `pkg upgrade nodejs`.
-- **`ENOENT ffmpeg`**: `pkg install ffmpeg`.
-- **El bot se desconecta al apagar la pantalla**: revisa el apartado "Que Android no lo cierre".

@@ -248,6 +248,14 @@ class BotManager extends EventEmitter {
           if (!inst.pairingCode) {
             inst.status = 'qr_ready';
             setBotStatus(botId, 'qr_ready', inst.qr);
+            // También en consola: permite vincular en servidores sin navegador (VPS, Termux, logs de Docker).
+            if (process.env.QR_IN_TERMINAL !== 'false') {
+              QRCode.toString(qr, { type: 'terminal', small: true })
+                .then((art) => console.log(`\n[${botId}] Escanea este QR en WhatsApp → Dispositivos vinculados (también visible en el panel):\n${art}`))
+                .catch(() => {});
+            }
+          } else if (firstQr) {
+            console.log(`\n[${botId}] Código de vinculación: ${inst.pairingCode}  (WhatsApp → Dispositivos vinculados → Vincular con número)\n`);
           }
           this.emit('qr', { botId, qr: inst.qr });
           this.emit('bot_update', { botId, status: inst.status, qr: inst.qr });
