@@ -141,7 +141,8 @@ class BotManager extends EventEmitter {
       let stale = false;
       try {
         const creds = JSON.parse(fs.readFileSync(credsFile, 'utf8'));
-        stale = !creds?.me?.id;
+        // creds.me se escribe al pedir un código de 8 dígitos; solo creds.account confirma el emparejamiento.
+        stale = !creds?.me?.id || !creds?.account;
       } catch {
         stale = true;
       }
@@ -683,7 +684,7 @@ class BotManager extends EventEmitter {
   isLinked(botId) {
     try {
       const creds = JSON.parse(fs.readFileSync(path.join(this.getSessionPath(botId), 'creds.json'), 'utf8'));
-      return Boolean(creds?.me?.id);
+      return Boolean(creds?.me?.id && creds?.account);
     } catch {
       return false;
     }
