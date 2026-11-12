@@ -3,9 +3,9 @@
 module.exports = {
   apps: [
     {
-      name: 'etho-bot-hub',
+      name: 'tanjiro-bot',
       script: 'src/index.js',
-      node_args: '--max-old-space-size=1024',
+      node_args: '--experimental-sqlite --max-old-space-size=1024',
       instances: 1,
       exec_mode: 'fork',
       autorestart: true,

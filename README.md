@@ -6,15 +6,49 @@ Permite desplegar y controlar múltiples bots con diferentes números desde un p
 
 ---
 
-## 📱 Ejecutar en Termux (Android)
+## 🚀 Guías de Instalación Rápida por Plataforma
 
+Elige tu sistema operativo y copia los comandos en tu terminal:
+
+### 📱 1. Android (Termux)
 ```bash
 pkg install -y git && git clone https://github.com/EthoSof/EthoBot.git && cd EthoBot
-bash scripts/termux-setup.sh   # instala todo y crea el .env
-bash scripts/termux-start.sh   # inicia en segundo plano
+bash scripts/termux-setup.sh   # Instala Node, ffmpeg, dependencias y crea .env
+bash scripts/termux-start.sh   # Inicia el bot en segundo plano
 ```
+> Panel web en: `http://localhost:3000` (Guía detallada en [docs/TERMUX.md](docs/TERMUX.md)).
 
-Panel en `http://localhost:3000`. Guía completa en [docs/TERMUX.md](docs/TERMUX.md).
+### 💻 2. Windows (CMD / Símbolo del Sistema & PowerShell)
+```cmd
+:: Clona el repositorio y entra a la carpeta
+git clone https://github.com/EthoSof/EthoBot.git
+cd EthoBot
+
+:: Instala las dependencias
+npm install
+
+:: Inicia el bot (o simplemente haz doble clic en iniciar.bat)
+npm start
+```
+> Abre tu navegador en: `http://localhost:3000`
+
+### 🐧 3. Linux (Ubuntu, Debian, VPS, Raspberry Pi)
+```bash
+# 1. Instalar Node.js 22+, Git y FFmpeg
+sudo apt update && sudo apt install -y curl git ffmpeg
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# 2. Clonar el repositorio y entrar
+git clone https://github.com/EthoSof/EthoBot.git && cd EthoBot
+
+# 3. Instalar dependencias
+npm install --omit=dev
+
+# 4. Iniciar el bot
+npm start
+```
+> Para mantenerlo 24/7 en segundo plano con PM2: `sudo npm i -g pm2 && pm2 start ecosystem.config.cjs && pm2 save`
 
 ---
 
@@ -318,28 +352,98 @@ Antes de abrir al público revisa **[docs/PRODUCTION.md](docs/PRODUCTION.md)** y
 
 Consulta **[docs/DEPLOY.md](docs/DEPLOY.md)** (Render, Railway, Docker/VPS y PM2).
 
-## 🚀 Inicio Rápido en Windows
+## 💻 Guía Detallada para Windows (CMD & PowerShell)
 
+### Opción 1: Un solo clic con `iniciar.bat`
 Simplemente haz doble clic en el archivo:
 👉 **`iniciar.bat`**
+Verificará que Node.js esté instalado, configurará el `.env` si no existe, iniciará el servidor y abrirá tu navegador automáticamente en `http://localhost:3000`.
 
-Este archivo verificará dependencias, iniciará el servidor y abrirá `http://localhost:3000` en tu navegador automáticamente.
+### Opción 2: Desde el Símbolo del Sistema (CMD)
+```cmd
+:: 1. Entrar a la carpeta del proyecto
+cd C:\ruta\a\EthoBot
 
----
+:: 2. Instalar dependencias
+npm install
 
-## 🛠️ Ejecución Manual
+:: 3. (Opcional) Crear archivo .env desde el ejemplo
+if not exist .env copy .env.example .env
 
-```bash
+:: 4. Iniciar el bot
+npm start
+
+:: 5. Modo desarrollo (recarga automática al editar código)
+npm run dev
+```
+
+### Opción 3: Desde Windows PowerShell
+```powershell
 # 1. Instalar dependencias
 npm install
 
-# 2. Iniciar servidor
+# 2. Copiar plantilla de entorno si no existe
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
+
+# 3. Iniciar el servidor
 npm start
 ```
 
-En el primer arranque se crea el usuario admin; si no defines `ADMIN_PASSWORD` en `.env`, la contraseña generada aparece en la consola.
+---
 
-Panel disponible en: **`http://localhost:3000`**
+## 🐧 Guía Detallada para Linux (Ubuntu, Debian, CentOS, VPS)
+
+### 1. Preparar el servidor e instalar dependencias
+```bash
+# Actualizar lista de paquetes
+sudo apt update && sudo apt upgrade -y
+
+# Instalar Git, FFmpeg y utilidades
+sudo apt install -y curl git ffmpeg python3 python3-pip
+
+# Instalar Node.js 22.x LTS oficial
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# Instalar yt-dlp para descargas de video/audio
+sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+sudo chmod a+rx /usr/local/bin/yt-dlp
+```
+
+### 2. Clonar e instalar
+```bash
+git clone https://github.com/EthoSof/EthoBot.git
+cd EthoBot
+npm install --omit=dev
+```
+
+### 3. Configurar `.env`
+```bash
+cp .env.example .env
+nano .env   # Edita tus credenciales si lo deseas (puerto, admin, gemini)
+```
+
+### 4. Ejecución en producción (24/7 con PM2)
+Para que el bot no se detenga al cerrar la terminal SSH y se reinicie solo si el servidor se reinicia:
+```bash
+# Instalar PM2 de forma global
+sudo npm install -g pm2
+
+# Iniciar la aplicación usando el archivo de configuración incluido
+pm2 start ecosystem.config.cjs
+
+# Guardar lista de procesos y activar arranque automático con el sistema
+pm2 save
+pm2 startup
+```
+
+**Comandos útiles de PM2:**
+```bash
+pm2 status             # Ver estado de Tanjiro Bot
+pm2 logs tanjiro-bot   # Ver registros en tiempo real
+pm2 restart tanjiro-bot # Reiniciar el bot
+pm2 stop tanjiro-bot    # Detener el bot
+```
 
 ---
 
