@@ -24,37 +24,34 @@ pkg install -y git && git clone https://github.com/EthoSof/EthoBot.git && cd Eth
 > 4. Abres tu **WhatsApp → Dispositivos vinculados → Vincular con número de teléfono** e ingresas el código. ¡Y listo! Tu bot responderá en WhatsApp.
 > 5. Para volver a iniciarlo en cualquier momento: `bash scripts/termux-start.sh` (Guía completa: [docs/TERMUX.md](docs/TERMUX.md)).
 
-### 💻 2. Windows (CMD / Símbolo del Sistema & PowerShell)
+### 💻 2. Windows (CMD / Símbolo del Sistema o PowerShell)
+**Comando rápido en 1 sola línea:**
 ```cmd
-:: Clona el repositorio y entra a la carpeta
-git clone https://github.com/EthoSof/EthoBot.git
-cd EthoBot
-
-:: Instala las dependencias
-npm install
-
-:: Inicia el bot (o simplemente haz doble clic en iniciar.bat)
-npm start
+git clone https://github.com/EthoSof/EthoBot.git && cd EthoBot && npm install && npm start
 ```
-> Abre tu navegador en: `http://localhost:3000`
+*(O descarga el proyecto, entra a la carpeta y haz doble clic en **`iniciar.bat`**)*
+
+> **¿Cómo funciona?**
+> 1. Al ejecutar `npm start` (o `iniciar.bat`), la terminal te preguntará: **1) Código de 8 dígitos** o **2) Código QR**.
+> 2. Si eliges código (opción 1), escribe tu número con código de país (ej: `573001234567`) y te dará tu código (`ABCD-EFGH`).
+> 3. En WhatsApp ve a: **Ajustes → Dispositivos vinculados → Vincular un dispositivo → Vincular con número de teléfono** e introduce el código.
+> 4. ¡Listo! La terminal mostrará **🎉 ¡LISTO!** y el bot responderá inmediatamente.
+> 5. La sesión queda guardada para siempre; las siguientes veces solo ejecutas `npm start` o abres `iniciar.bat`.
 
 ### 🐧 3. Linux (Ubuntu, Debian, VPS, Raspberry Pi)
+**Comando completo en 1 sola línea (instala todo e inicia):**
 ```bash
-# 1. Instalar Node.js 22+, Git y FFmpeg
-sudo apt update && sudo apt install -y curl git ffmpeg
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-sudo apt install -y nodejs
-
-# 2. Clonar el repositorio y entrar
-git clone https://github.com/EthoSof/EthoBot.git && cd EthoBot
-
-# 3. Instalar dependencias
-npm install --omit=dev
-
-# 4. Iniciar el bot
-npm start
+sudo apt update && sudo apt install -y curl git ffmpeg && curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && sudo apt install -y nodejs && git clone https://github.com/EthoSof/EthoBot.git && cd EthoBot && npm install --omit=dev && npm start
 ```
-> Para mantenerlo 24/7 en segundo plano con PM2: `sudo npm i -g pm2 && pm2 start ecosystem.config.cjs && pm2 save`
+*(O si ya tienes Node.js y Git instalados en tu servidor: `git clone https://github.com/EthoSof/EthoBot.git && cd EthoBot && npm install --omit=dev && npm start`)*
+
+> **¿Cómo funciona?**
+> 1. La terminal de Linux te solicitará elegir entre **1) Código de 8 dígitos** o **2) Código QR**.
+> 2. En servidores VPS sin entorno gráfico (SSH), el código de 8 dígitos te permite vincular al instante sin abrir navegadores ni puertos.
+> 3. Una vez vinculado, para dejarlo activo 24/7 en segundo plano aunque cierres tu terminal SSH:
+>    ```bash
+>    sudo npm install -g pm2 && pm2 start ecosystem.config.cjs && pm2 save && pm2 startup
+>    ```
 
 ---
 
