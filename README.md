@@ -1,22 +1,28 @@
 # TANJIRO BOT - MULTI-BOT HUB & DASHBOARD PRO
 
-Sistema integral de WhatsApp: **Backend (Node.js 22.13+ y Baileys Multi-Instancia) + Frontend Web Reactivo SaaS + Almacenamiento Local Nativo (Zero Config)**.
+Sistema integral de WhatsApp: **Backend (Node.js y Baileys Multi-Instancia) + Almacenamiento Local Nativo (Zero Config)**.
 
-Permite desplegar y controlar múltiples bots con diferentes números desde un panel visual ejecutivo, ver el código QR en vivo para vincular WhatsApp, crear bots con 4 facetas (Recreativo, Asistente, Asesor, IA Autónoma), gestionar catálogo de productos, capturar prospectos (CRM Leads), horarios de atención, transferencia a asesor humano (#asesor), probar en el simulador de chat en vivo y registrar toda la actividad en tiempo real.
+Permite desplegar y controlar múltiples bots con diferentes números desde la terminal o desde el panel web, vincular WhatsApp mediante código de 8 dígitos (sin escanear QR) o código QR, crear asistentes con 4 facetas (Recreativo, Asistente, Asesor de Ventas, IA Autónoma), catálogo de productos, captura de prospectos (CRM Leads), horarios de atención, minijuegos, economía y 125 comandos listos para usar.
+
+> 📱 **¿No tienes computadora? ¡Puedes tener tu propio bot desde tu celular!**
+> Tanjiro Bot está 100% optimizado para **Android con Termux**. No necesitas computadora ni conocimientos de programación: clonas, introduces tu número de teléfono en la terminal, escribes el código de 8 dígitos en WhatsApp y tu bot ya queda funcionando 24/7.
 
 ---
 
 ## 🚀 Guías de Instalación Rápida por Plataforma
 
-Elige tu sistema operativo y copia los comandos en tu terminal:
+Elige tu dispositivo y copia los comandos en tu terminal:
 
-### 📱 1. Android (Termux)
+### 📱 1. Android (Termux) — ¡Directo en tu celular, sin PC!
 ```bash
-pkg install -y git && git clone https://github.com/EthoSof/EthoBot.git && cd EthoBot
-bash scripts/termux-setup.sh   # Instala Node, ffmpeg, dependencias y crea .env
-bash scripts/termux-start.sh   # Inicia el bot en segundo plano
+pkg install -y git && git clone https://github.com/EthoSof/EthoBot.git && cd EthoBot && bash scripts/termux-setup.sh
 ```
-> Panel web en: `http://localhost:3000` (Guía detallada en [docs/TERMUX.md](docs/TERMUX.md)).
+> **¿Cómo funciona?**
+> 1. Pegas el comando en Termux.
+> 2. El instalador configura todo y te pregunta si deseas vincular WhatsApp de inmediato.
+> 3. Escribes tu número (ej: `573001234567`) y te dará un **código de 8 dígitos** (`ABCD-EFGH`).
+> 4. Abres tu **WhatsApp → Dispositivos vinculados → Vincular con número de teléfono** e ingresas el código. ¡Y listo! Tu bot responderá en WhatsApp.
+> 5. Para volver a iniciarlo en cualquier momento: `bash scripts/termux-start.sh` (Guía completa: [docs/TERMUX.md](docs/TERMUX.md)).
 
 ### 💻 2. Windows (CMD / Símbolo del Sistema & PowerShell)
 ```cmd
@@ -339,9 +345,9 @@ docs/DEPLOY.md      Guía de despliegue
 
 ## 💳 Planes, pagos y soporte
 
-- **Cuenta gratuita:** 7 días de uso y máximo 3 bots. Más tiempo o más bots requiere un plan de pago.
-- **Pagos:** tarjeta con Stripe Checkout (activación solo por webhook firmado) y transferencia con aprobación manual. Ver **[docs/PAYMENTS.md](docs/PAYMENTS.md)**.
-- **Tickets:** botón *Reportar error* en la landing (sin cuenta) y bandeja *Soporte & Tickets* en el panel.
+- **Uso propio y auto-hospedado (Termux / VPS / PC):** Totalmente libre, gratuito e ilimitado de por vida. El bot principal no tiene fecha de caducidad ni restricciones.
+- **Modo SaaS Multi-Usuario (opcional):** Si deseas montar una plataforma comercial para ofrecer bots a clientes externos, incluye integración opcional con Stripe Checkout y transferencias bancarias. Ver **[docs/PAYMENTS.md](docs/PAYMENTS.md)**.
+- **Tickets:** botón *Reportar error* en la landing y bandeja *Soporte & Tickets* en el panel.
 - **Ideas a futuro:** [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## ✅ Producción
