@@ -8,10 +8,10 @@ import { askAI } from '../lib/ai.js';
 const joinCmds = (items) => items.join("\n\n");
 
 export default [
- { name: 'menu', aliases: ['help', 'comandos', 'commands', 'ayuda', 'etho'], desc: 'Muestra el menú organizado de comandos disponibles.', usage: '[categoría]',
+ { name: 'menu', aliases: ['help', 'comandos', 'commands', 'ayuda', 'tanjiro', 'etho'], desc: 'Muestra el menú organizado de comandos disponibles.', usage: '[categoría]',
  run: async (c) => {
  const P = c.prefix;
- const botName = c.botName || config.botName || 'Etho';
+ const botName = c.botName || config.botName || 'Tanjiro Bot';
  const q = (c.text || '').toLowerCase().trim();
 
  if (!q) {

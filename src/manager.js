@@ -646,7 +646,7 @@ class BotManager extends EventEmitter {
       const defaultId = 'bot_principal';
       const created = upsertBot({
         id: defaultId,
-        name: config.botName || 'Etho Bot Principal',
+        name: config.botName || 'Tanjiro Bot Principal',
         phone: config.pairingNumber || '',
         prefix: config.prefix || '#',
         status: 'offline',

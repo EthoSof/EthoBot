@@ -1,4 +1,4 @@
-# ETHO MULTI-BOT HUB & DASHBOARD PRO
+# TANJIRO BOT - MULTI-BOT HUB & DASHBOARD PRO
 
 Sistema integral de WhatsApp: **Backend (Node.js 22.13+ y Baileys Multi-Instancia) + Frontend Web Reactivo SaaS + Almacenamiento Local Nativo (Zero Config)**.
 

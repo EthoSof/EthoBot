@@ -8,7 +8,7 @@ const rawSessionDir = process.env.SESSIONS_DIR || process.env.SESSION_DIR || def
 
 export const config = {
   isVercel,
-  botName: process.env.BOT_NAME || 'Etho',
+  botName: process.env.BOT_NAME || 'Tanjiro Bot',
   prefix: process.env.PREFIX || '#',
   owners: (process.env.OWNER_NUMBERS || '').split(',').map((s) => s.trim()).filter(Boolean),
   currency: process.env.CURRENCY || 'coins',

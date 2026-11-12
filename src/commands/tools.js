@@ -31,7 +31,7 @@ export default [
  const ans = await askAI(c.text, aiCtx.systemPrompt, aiCtx.personality || 'assistant', {
  history,
  userFacts,
- botName: c.botName || aiCtx.botName || 'Etho',
+ botName: c.botName || aiCtx.botName || 'Tanjiro Bot',
  purpose: aiCtx.purpose,
  ownerName: aiCtx.ownerName,
  pilotContext: aiCtx.pilotContext,

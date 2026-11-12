@@ -1,7 +1,7 @@
 {
-  "name": "etho-bot",
+  "name": "tanjiro-bot",
   "version": "2.0.0",
-  "description": "Etho Multi-Bot Hub & Executive SaaS Dashboard para WhatsApp (Baileys Multi-Instancia, IA Asesor, CRM, Catálogo, Economía y Gacha)",
+  "description": "Tanjiro Bot Multi-Bot Hub & Executive Dashboard para WhatsApp (Baileys Multi-Instancia, IA Asesor, CRM, Catálogo, Economía y Gacha)",
   "type": "module",
   "main": "src/index.js",
   "scripts": {

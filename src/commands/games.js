@@ -47,15 +47,16 @@ export default [
  setUser(c.sender, { coins: c.user.coins + net });
  await c.reply(`🎰 [ ${r.join(' | ')} ]\n${net > 0 ? `🏆 ¡Ganaste *${fmt(net)} ${cur}*!` : `💸 Perdiste *${fmt(bet)} ${cur}*.`}`);
  } },
- { name: 'ppt', aliases: ['rps'], desc: 'Piedra, papel o tijera contra Etho.', usage: '[piedra|papel|tijera]',
+ { name: 'ppt', aliases: ['rps'], desc: 'Piedra, papel o tijera contra el bot.', usage: '[piedra|papel|tijera]',
  run: async (c) => {
+ const bName = c.botName || 'Tanjiro';
  const E = { piedra: '🪨', papel: '📄', tijera: '✂️' }, me = (c.args[0] || '').toLowerCase();
  if (!E[me]) return c.reply(`Uso: ${c.prefix}ppt piedra|papel|tijera`);
  const bot = pick(Object.keys(E)), win = { piedra: 'tijera', papel: 'piedra', tijera: 'papel' };
  let res = '🤝 Empate';
  if (win[me] === bot) { res = `🏆 ¡Ganaste! +30 ${cur}`; setUser(c.sender, { coins: c.user.coins + 30 }); }
  else if (win[bot] === me) res = '❌ Perdiste';
- await c.reply(`Tú: ${E[me]} vs Etho: ${E[bot]}\n${res}`);
+ await c.reply(`Tú: ${E[me]} vs ${bName}: ${E[bot]}\n${res}`);
  } },
  { name: 'dado', aliases: ['dice', 'roll6'], desc: 'Lanzar un dado.', usage: '<caras>',
  run: async (c) => { const n = Math.min(1000, Math.max(2, parseInt(c.args[0]) || 6)); await c.reply(`🎲 Dado de ${n} caras: *${rand(1, n)}*`); } },

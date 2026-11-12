@@ -136,7 +136,7 @@ export async function askAI(prompt, customSystemPrompt = null, personality = 're
   const {
     history = [],
     userFacts = {},
-    botName = 'Etho',
+    botName = 'Tanjiro Bot',
     isAutoPilot = false,
     pilotPersona = 'as_assistant',
     ownerName = '',
@@ -370,7 +370,7 @@ export function cleanResponseText(str, forbiddenWords = []) {
 /**
  * Motor Cognitivo Experto de Respaldo para Atención al Usuario (usa catálogo real, FAQs, horarios, cálculos y memoria)
  */
-function generateCognitiveResponse(prompt, personality, history = [], userFacts = {}, botName = 'Etho', options = {}) {
+function generateCognitiveResponse(prompt, personality, history = [], userFacts = {}, botName = 'Tanjiro Bot', options = {}) {
   const p = prompt.toLowerCase().trim();
   const pNorm = p.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const userName = userFacts.nombre || userFacts.name || null;
@@ -510,7 +510,7 @@ function generateCognitiveResponse(prompt, personality, history = [], userFacts 
   }
 
   // 8. Saludos, identidad, agradecimientos y despedidas
-  if (/^(?:etho\s+)?(hola|buenas|buenos dias|buenas tardes|buenas noches|hey|que tal|como estas|como te va|saludos)\b/i.test(pNorm)) {
+  if (/^(?:tanjiro\s+|etho\s+)?(hola|buenas|buenos dias|buenas tardes|buenas noches|hey|que tal|como estas|como te va|saludos)\b/i.test(pNorm)) {
     return followUp ? `Aquí sigo${greetingName}. ¿En qué te ayudo?` : `¡Hola${greetingName}! ¿En qué te puedo ayudar?`;
   }
 
@@ -536,4 +536,5 @@ function generateCognitiveResponse(prompt, personality, history = [], userFacts 
 }
 
 // Compatibilidad directa
-export const askEtho = (prompt, history = []) => askAI(prompt, null, 'recreational', { history });
+export const askTanjiro = (prompt, history = []) => askAI(prompt, null, 'recreational', { history });
+export const askEtho = askTanjiro;
