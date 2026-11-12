@@ -449,6 +449,17 @@ pm2 stop tanjiro-bot    # Detener el bot
 
 ## 📱 Cómo Vincular un Bot de WhatsApp
 
+### Opción rápida: solo con la terminal (ideal en el celular con Termux)
+
+Ejecuta `npm start`. Si el bot aún no está vinculado, la terminal te pregunta:
+1. **Código de 8 dígitos** (recomendado en el celular): escribes el número del bot (ej. `573001234567`) y aparece un código. En WhatsApp: **Dispositivos vinculados → Vincular un dispositivo → Vincular con el número de teléfono** y lo escribes.
+2. **QR**: se dibuja en la terminal para escanearlo desde otro teléfono.
+
+Cuando aparezca **¡LISTO!** el bot ya responde (prueba con `#menu`). La sesión queda guardada y las siguientes veces basta con `npm start`. Si el código caduca, se genera otro solo.
+En servidores sin terminal interactiva (Docker, PM2) define `PAIRING_NUMBER` en `.env` para recibir el código en los logs, o escanea el QR que se imprime ahí.
+
+### Desde el panel web
+
 1. Abre el panel en `http://localhost:3000`.
 2. Haz clic en **`+ Nuevo Bot`**.
 3. Elige la **Faceta** (*Recreativo, Asistente, Asesor, IA Autónoma*) y nómbralo.

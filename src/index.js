@@ -8,6 +8,7 @@ import { startServer, app } from './server.js';
 import { ensureFfmpegInPath } from './lib/utils.js';
 import { startMaintenance } from './lib/maintenance.js';
 import { alert } from './lib/alerts.js';
+import { setupTerminalLink } from './lib/terminal-link.js';
 
 export { app };
 export default app;
@@ -37,7 +38,10 @@ if (!process.env.VERCEL) {
       }
     });
 
-    // 3. Iniciar todos los bots configurados y activos
+    // 3. Vincular WhatsApp desde la terminal si el bot principal aún no tiene sesión
+    await setupTerminalLink(botManager);
+
+    // 4. Iniciar todos los bots configurados y activos
     await botManager.initAllBots();
   }
 

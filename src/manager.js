@@ -255,7 +255,19 @@ class BotManager extends EventEmitter {
                 .catch(() => {});
             }
           } else if (firstQr) {
-            console.log(`\n[${botId}] Código de vinculación: ${inst.pairingCode}  (WhatsApp → Dispositivos vinculados → Vincular con número)\n`);
+            const shown = String(inst.pairingCode).replace(/^(.{4})(.{4})$/, '$1-$2');
+            console.log([
+              '',
+              '  ╔══════════════════════════════════════╗',
+              `  ║   CÓDIGO DE VINCULACIÓN:  ${shown.padEnd(11)}║`,
+              '  ╚══════════════════════════════════════╝',
+              '  En el celular con el número del bot:',
+              '   1. Abre WhatsApp → ⋮ / Ajustes → Dispositivos vinculados',
+              '   2. Toca "Vincular un dispositivo"',
+              '   3. Toca "Vincular con el número de teléfono"',
+              `   4. Escribe el código: ${shown}`,
+              ''
+            ].join('\n'));
           }
           this.emit('qr', { botId, qr: inst.qr });
           this.emit('bot_update', { botId, status: inst.status, qr: inst.qr });
@@ -289,6 +301,7 @@ class BotManager extends EventEmitter {
 
           this.startReminders(botId, sock);
 
+          console.log(`[${botId}] ✅ Conectado a WhatsApp como +${connectedPhone || '?'} — el bot ya está respondiendo mensajes.`);
           this.emit('bot_update', { botId, status: 'online', phone: connectedPhone });
           addBotLog({
             botId,
@@ -646,27 +659,38 @@ class BotManager extends EventEmitter {
   }
 
   /** Inicializa todos los bots activos al arrancar el servidor */
-  async initAllBots() {
-    let bots = listBots();
+  /** Si la BD está vacía, registra el bot inicial a partir del .env. Devuelve la lista de bots. */
+  ensureDefaultBot() {
+    const bots = listBots();
+    if (bots.length > 0) return bots;
+    const created = upsertBot({
+      id: 'bot_principal',
+      name: config.botName || 'Tanjiro Bot Principal',
+      phone: config.pairingNumber || '',
+      prefix: config.prefix || '#',
+      status: 'offline',
+      is_active: 1,
+      settings: {
+        currency: config.currency || 'coins',
+        welcomeEnabled: true,
+        antiSpamEnabled: true
+      }
+    });
+    return [created];
+  }
 
-    // Si la BD está vacía, registrar el bot inicial a partir del .env
-    if (bots.length === 0) {
-      const defaultId = 'bot_principal';
-      const created = upsertBot({
-        id: defaultId,
-        name: config.botName || 'Tanjiro Bot Principal',
-        phone: config.pairingNumber || '',
-        prefix: config.prefix || '#',
-        status: 'offline',
-        is_active: 1,
-        settings: {
-          currency: config.currency || 'coins',
-          welcomeEnabled: true,
-          antiSpamEnabled: true
-        }
-      });
-      bots = [created];
+  /** ¿La sesión de WhatsApp de este bot ya quedó vinculada (creds.json con creds.me)? */
+  isLinked(botId) {
+    try {
+      const creds = JSON.parse(fs.readFileSync(path.join(this.getSessionPath(botId), 'creds.json'), 'utf8'));
+      return Boolean(creds?.me?.id);
+    } catch {
+      return false;
     }
+  }
+
+  async initAllBots() {
+    const bots = this.ensureDefaultBot();
 
     console.log(`[BotManager] Cargando ${bots.length} bot(s) registrados...`);
     const toStart = [];

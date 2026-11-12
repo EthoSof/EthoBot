@@ -32,14 +32,19 @@ El panel web estará disponible en `http://localhost:3000` desde el navegador de
 
 ---
 
-## Vincular WhatsApp
+## Vincular WhatsApp (desde la terminal, sin navegador)
 
-Como no puedes escanear un código QR desde la misma pantalla del teléfono:
-1. Abre `http://localhost:3000` en tu navegador.
-2. Al añadir o editar tu bot, selecciona la opción **Vincular con código**.
-3. Ingresa tu número de teléfono (con código de país, sin signos ni espacios, ej: `573001234567`).
-4. El panel generará un código de 8 dígitos.
-5. En WhatsApp ve a: **Ajustes / Configuración → Dispositivos vinculados → Vincular con número de teléfono** e introduce el código.
+La primera vez que inicias el bot (`npm start` o `bash scripts/termux-start.sh`), la terminal te pregunta cómo vincularlo:
+
+1. Elige **1) Código de 8 dígitos** (pulsa Enter).
+2. Escribe el número de WhatsApp del bot con código de país, sin `+` ni espacios (ej: `573001234567`).
+3. La terminal muestra un código como `ABCD-EFGH`.
+4. En WhatsApp ve a: **Ajustes → Dispositivos vinculados → Vincular un dispositivo → Vincular con el número de teléfono** e introduce el código.
+5. Cuando la terminal diga **¡LISTO!**, el bot ya responde. Pruébalo escribiendo `#menu`.
+
+Si el código caduca, se genera otro automáticamente. La sesión queda guardada: las siguientes veces solo ejecutas el comando y el bot se conecta solo.
+
+También puedes hacerlo desde el panel (`http://localhost:3000` → tu bot → **Vincular con código**), o definir `PAIRING_NUMBER=573001234567` en `.env` para que muestre el código sin preguntar.
 
 ---
 

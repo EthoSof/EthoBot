@@ -32,6 +32,14 @@ if [ "$1" = "--foreground" ] || [ "$1" = "-f" ]; then
   exec npm run start:termux
 fi
 
+# Primera vez (WhatsApp sin vincular): iniciar en primer plano para pedir el código de 8 dígitos aquí mismo.
+CREDS="data/sessions/bot_principal/creds.json"
+if ! grep -q '"me"' "$CREDS" 2>/dev/null && ! grep -qE '^PAIRING_NUMBER=[0-9]{8,}' .env 2>/dev/null; then
+  echo "📱 WhatsApp aún no está vinculado: iniciando en primer plano para vincularlo."
+  echo "   Cuando veas \"¡LISTO!\" el bot ya funciona. Mantén Termux abierto."
+  exec npm run start:termux
+fi
+
 # Modo segundo plano (background con nohup)
 nohup npm run start:termux >> logs/bot.log 2>&1 &
 BOT_PID=$!
