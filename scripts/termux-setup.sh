@@ -100,3 +100,13 @@ echo "  ▶ Ver registros/logs:   tail -f logs/bot.log"
 echo "  ▶ Detener el bot:       bash scripts/termux-stop.sh"
 echo "  ▶ Panel de control web: http://localhost:3000"
 echo "=========================================================="
+echo ""
+
+# Preguntar si desea iniciar y vincular de inmediato
+if [ -t 0 ]; then
+  read -p "¿Deseas vincular WhatsApp e iniciar tu bot ahora mismo? [S/n]: " -n 1 -r
+  echo ""
+  if [[ $REPLY =~ ^[Ss]$ ]] || [[ -z $REPLY ]]; then
+    exec bash scripts/termux-start.sh
+  fi
+fi

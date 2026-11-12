@@ -671,6 +671,9 @@ class BotManager extends EventEmitter {
       prefix: config.prefix || '#',
       status: 'offline',
       is_active: 1,
+      payment_status: 'paid',
+      plan: 'unlimited',
+      expires_at: 0,
       settings: {
         currency: config.currency || 'coins',
         welcomeEnabled: true,
