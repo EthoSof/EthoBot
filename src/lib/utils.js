@@ -126,3 +126,21 @@ export async function stickerWithFfmpeg(buf, { video = false } = {}) {
     fs.rmSync(out, { force: true });
   }
 }
+
+export async function triggerWebhook(webhookUrl, eventName, data) {
+  if (!webhookUrl || !webhookUrl.startsWith('http')) return;
+  try {
+    const payload = {
+      event: eventName,
+      timestamp: new Date().toISOString(),
+      data
+    };
+    await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'User-Agent': 'Etho-Bot-Webhook/2.0' },
+      body: JSON.stringify(payload)
+    }).catch(() => {});
+  } catch (err) {
+    console.warn(`[webhook] Error enviando a ${webhookUrl}:`, err.message);
+  }
+}

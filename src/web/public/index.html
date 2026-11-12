@@ -958,8 +958,8 @@
           <span>Guía de Precios</span>
         </button>
         <button class="nav-btn" data-tab="settings">
-          <i class="fa-solid fa-database"></i>
-          <span>Copia de Seguridad</span>
+          <i class="fa-solid fa-hard-drive"></i>
+          <span>Almacenamiento Local</span>
         </button>
 
         <!-- SECCIÓN EXCLUSIVA DE ADMINISTRACIÓN (TÚ COMO ADMIN) -->
@@ -1578,129 +1578,58 @@
 
       
 
-      <!-- ================= PESTAÑA 7: SUPABASE Y CONFIG ================= -->
+      <!-- ================= PESTAÑA 7: ALMACENAMIENTO LOCAL ================= -->
       <section id="tab-settings" class="tab-content">
         <div class="section-header">
           <div>
-            <h2>Copia de Seguridad & Almacenamiento en la Nube</h2>
-            <p>Supervisa el estado de la copia de seguridad, redundancia de datos y sincronización de tus asistentes.</p>
+            <h2>Almacenamiento Local (Zero Config)</h2>
+            <p>El bot funciona de forma 100% autónoma y local, sin requerir configuración ni cuentas de base de datos externa.</p>
           </div>
         </div>
 
         <div class="card mb-4">
           <div class="card-header">
-            <h3><i class="fa-solid fa-cloud-arrow-up text-blue"></i> Estado del Respaldo en la Nube</h3>
-            <button class="btn btn-secondary btn-sm" id="testSupabaseBtn">
-              <i class="fa-solid fa-arrows-rotate"></i> Verificar Sincronización Ahora
+            <h3><i class="fa-solid fa-hard-drive text-blue"></i> Estado del Almacenamiento</h3>
+            <button class="btn btn-secondary btn-sm" id="testStorageBtn">
+              <i class="fa-solid fa-arrows-rotate"></i> Comprobar Estado
             </button>
           </div>
-          <div id="supabaseDiagnostic" class="diagnostic-box">
-            <p class="text-muted">Presiona 'Verificar Sincronización Ahora' para comprobar la salud de la copia en la nube.</p>
+          <div id="storageDiagnostic" class="diagnostic-box">
+            <div style="color: var(--green);">
+              <strong><i class="fa-solid fa-circle-check"></i> Almacenamiento Local Autónomo Activo</strong>
+              <p class="text-muted" style="margin-top: 6px;">Todas las tablas locales (bots, prospectos, catálogo, reglas y logs) están listas y operativas sin dependencias externas.</p>
+            </div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-shield-halved text-purple"></i> Respaldo & Configuración de Almacenamiento</h3>
-            <button class="btn btn-secondary btn-sm" onclick="const b = document.getElementById('techDbDetails'); b.style.display = b.style.display === 'none' ? 'block' : 'none';">
-              <i class="fa-solid fa-terminal"></i> Ver Ajustes Técnicos
-            </button>
+            <h3><i class="fa-solid fa-shield-halved text-purple"></i> Respaldo & Persistencia Local</h3>
           </div>
-          <p class="text-muted mb-2">
-            La plataforma almacena todos tus bots, prospectos del CRM, catálogo de productos y registros de forma redundante y protegida en la nube.
+          <p class="text-muted mb-3">
+            Todos los datos (asistentes, mensajes, prospectos y sesiones de WhatsApp) se guardan automáticamente en la carpeta local <code>./data/</code>:
           </p>
-          <div id="techDbDetails" style="display: none; margin-top: 14px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <small class="text-muted">Estructura de tablas y base de datos relacional para réplicas en la nube:</small>
-              <button class="btn btn-primary btn-sm" id="copySqlBtn">
-                <i class="fa-solid fa-copy"></i> Copiar Esquema
-              </button>
+          <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
+                <i class="fa-solid fa-database"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Base de Datos Local</span>
+                <span style="font-weight: 600; font-size: 0.95rem;">./data/bot.db</span>
+                <small class="text-muted">Motor SQLite Nativo ultrarrápido</small>
+              </div>
             </div>
-            <pre class="code-block" id="sqlCodeBlock">-- TABLA DE BOTS CON FACETAS
-create table if not exists bots (
-  id text primary key,
-  name text not null,
-  phone text,
-  prefix text default '#',
-  status text default 'offline',
-  qr_code text,
-  pairing_code text,
-  is_active boolean default true,
-  personality text default 'recreational',
-  system_prompt text,
-  ai_auto_reply boolean default false,
-  settings jsonb default '{}'::jsonb,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
-);
-
--- TABLA DE LOGS DE ACTIVIDAD
-create table if not exists bot_logs (
-  id bigserial primary key,
-  bot_id text references bots(id) on delete cascade,
-  type text not null,
-  chat_jid text,
-  sender_jid text,
-  sender_name text,
-  content text,
-  details jsonb default '{}'::jsonb,
-  created_at timestamptz default now()
-);
-
--- TABLA DE FUNCIONES Y REGLAS
-create table if not exists bot_custom_functions (
-  id text primary key,
-  bot_id text default 'all',
-  name text not null,
-  description text,
-  trigger_type text default 'command',
-  trigger_value text not null,
-  response_text text not null,
-  response_type text default 'text',
-  is_enabled boolean default true,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
-);
-
--- TABLA DE PROSPECTOS CRM (LEADS)
-create table if not exists bot_leads (
-  id text primary key,
-  bot_id text references bots(id) on delete cascade,
-  name text,
-  phone text,
-  email text,
-  interest text,
-  notes text,
-  status text default 'nuevo',
-  created_at timestamptz default now()
-);
-
--- TABLA DE CATÁLOGO DE PRODUCTOS
-create table if not exists bot_products (
-  id text primary key,
-  bot_id text references bots(id) on delete cascade,
-  name text not null,
-  description text,
-  price numeric default 0,
-  currency text default 'USD',
-  image_url text,
-  category text default 'General',
-  is_active boolean default true,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
-);
-
-alter table bots enable row level security;
-alter table bot_logs enable row level security;
-alter table bot_custom_functions enable row level security;
-alter table bot_leads enable row level security;
-alter table bot_products enable row level security;
-
-create policy "etho bots policy" on bots for all using (true) with check (true);
-create policy "etho bot_logs policy" on bot_logs for all using (true) with check (true);
-create policy "etho custom_functions policy" on bot_custom_functions for all using (true) with check (true);
-create policy "etho bot_leads policy" on bot_leads for all using (true) with check (true);
-create policy "etho bot_products policy" on bot_products for all using (true) with check (true);</pre>
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+                <i class="fa-solid fa-key"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Sesiones de WhatsApp</span>
+                <span style="font-weight: 600; font-size: 0.95rem;">./data/sessions/</span>
+                <small class="text-muted">Credenciales Baileys multi-número</small>
+              </div>
+            </div>
           </div>
         </div>
       </section>

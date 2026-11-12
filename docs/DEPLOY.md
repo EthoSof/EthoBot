@@ -13,7 +13,6 @@ Por eso **no funciona en Vercel/serverless**: usa Render, Railway o un VPS.
 | `AUTH_SECRET` | Recomendada | Firma de sesiones (32+ caracteres). Si falta, se genera en `data/.auth_secret`. |
 | `OWNER_NUMBERS` | No | Números dueños, sin `+`, separados por coma. |
 | `GEMINI_API_KEY` | Para IA | Clave de Google AI Studio. |
-| `SUPABASE_URL` / `SUPABASE_KEY` | No | Espejo en la nube (ver `supabase/schema.sql`). |
 | `CORS_ORIGIN` | No | Orígenes permitidos, separados por coma. |
 | `PUBLIC_URL` | Para pagos con tarjeta | URL pública con https, usada en el retorno de Stripe. |
 | `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` | Para pagos con tarjeta | Ver [PAYMENTS.md](PAYMENTS.md). |

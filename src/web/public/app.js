@@ -80,7 +80,7 @@ const state = {
   activeSimBotId: null,
   activeSettingsBotId: null,
   qrPollInterval: null,
-  supabaseStatus: null,
+  storageStatus: null,
   currentUser: null,
   token: localStorage.getItem('etho_auth_token') || '',
   adminUsers: [],
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initForms();
   initFilters();
   initPricingCalculator();
-  initSupabaseSection();
+  initStorageSection();
   connectSSE();
 
   // Verificar sesión y cargar datos
@@ -779,15 +779,14 @@ function connectSSE() {
 }
 
 // ==========================================
-// ESTADO GENERAL & SUPABASE
+// ESTADO GENERAL & ALMACENAMIENTO
 // ==========================================
 async function fetchStatus() {
   try {
     const res = await fetch('/api/status');
     const data = await res.json();
     if (data.ok) {
-      state.supabaseStatus = data.supabase;
-      updateSupabaseBadge(data.supabase);
+      state.storageStatus = data.storage || data.supabase;
       if (data.stats) {
         setMaxBots(data.stats.maxBots);
         const el = document.getElementById('statTotalLogs');
@@ -797,18 +796,6 @@ async function fetchStatus() {
       }
     }
   } catch (err) { console.error('Error fetching status:', err); }
-}
-
-function updateSupabaseBadge(supa) {
-  const badge = document.getElementById('supaStatusBadge');
-  if (!badge) return;
-  if (!supa || !supa.ok) {
-    badge.innerHTML = '<span class="status-dot red"></span><div class="sys-meta"><strong>Nube de Datos</strong><small style="color: var(--red);">Desconectado</small></div>';
-  } else if (supa.tablesReady === false) {
-    badge.innerHTML = '<span class="status-dot green"></span><div class="sys-meta"><strong>Nube de Datos</strong><small style="color: var(--green);">Copia Segura</small></div>';
-  } else {
-    badge.innerHTML = '<span class="status-dot green"></span><div class="sys-meta"><strong>Nube de Datos</strong><small style="color: var(--green);">Sincronizado OK</small></div>';
-  }
 }
 
 // ==========================================
@@ -2151,52 +2138,33 @@ function initPricingCalculator() {
 }
 
 // ==========================================
-// SECCIÓN SUPABASE & DIAGNÓSTICO
+// SECCIÓN ALMACENAMIENTO LOCAL & DIAGNÓSTICO
 // ==========================================
-function initSupabaseSection() {
-  const testBtn = document.getElementById('testSupabaseBtn');
-  const copySqlBtn = document.getElementById('copySqlBtn');
+function initStorageSection() {
+  const testBtn = document.getElementById('testStorageBtn') || document.getElementById('testSupabaseBtn');
 
   if (testBtn) {
     testBtn.addEventListener('click', async () => {
-      const diagBox = document.getElementById('supabaseDiagnostic');
-      diagBox.innerHTML = '<p class="text-muted"><i class="fa-solid fa-spinner fa-spin"></i> Verificando estado de sincronización en la nube...</p>';
+      const diagBox = document.getElementById('storageDiagnostic') || document.getElementById('supabaseDiagnostic');
+      if (diagBox) {
+        diagBox.innerHTML = '<p class="text-muted"><i class="fa-solid fa-spinner fa-spin"></i> Comprobando almacenamiento local...</p>';
+      }
 
       try {
-        const res = await fetch('/api/supabase/test', { method: 'POST' });
+        const res = await fetch('/api/storage/test', { method: 'POST' });
         const data = await res.json();
 
-        if (data.ok && data.tablesReady) {
+        if (diagBox) {
           diagBox.innerHTML = `
             <div style="color: var(--green);">
-              <strong><i class="fa-solid fa-circle-check"></i> ${escapeHtml(data.message)}</strong>
-              <p class="text-muted" style="margin-top: 6px;">Todas las tablas requeridas ('bots', 'bot_leads', 'bot_products', 'bot_logs') están listas.</p>
-            </div>
-          `;
-        } else if (data.tablesReady === false) {
-          diagBox.innerHTML = `
-            <div style="color: var(--yellow);">
-              <strong><i class="fa-solid fa-circle-check text-green"></i> Almacenamiento Seguro Activo</strong>
-              <p class="text-muted" style="margin-top: 6px;">${escapeHtml(data.message)}</p>
-              <p style="margin-top: 6px;">Tus datos y registros están respaldados en la base de datos principal y en la nube.</p>
-            </div>
-          `;
-        } else {
-          diagBox.innerHTML = `
-            <div style="color: var(--red);">
-              <strong><i class="fa-solid fa-circle-xmark"></i> Error de conexión:</strong>
-              <p style="margin-top: 6px;">${escapeHtml(data.error || 'No se pudo verificar el servicio en la nube')}</p>
+              <strong><i class="fa-solid fa-circle-check"></i> ${escapeHtml(data.message || 'Almacenamiento Local Activo')}</strong>
+              <p class="text-muted" style="margin-top: 6px;">El sistema no requiere bases de datos externas ni configuración adicional. Todo funciona de forma local.</p>
             </div>
           `;
         }
-      } catch (err) { diagBox.innerHTML = `<div style="color: var(--red);">Error: ${escapeHtml(err.message)}</div>`; }
-    });
-  }
-
-  if (copySqlBtn) {
-    copySqlBtn.addEventListener('click', () => {
-      const code = document.getElementById('sqlCodeBlock').textContent;
-      navigator.clipboard.writeText(code).then(() => showToast('¡Script SQL copiado!', 'success')).catch(() => showToast('Error al copiar', 'error'));
+      } catch (err) {
+        if (diagBox) diagBox.innerHTML = `<div style="color: var(--red);">Error: ${escapeHtml(err.message)}</div>`;
+      }
     });
   }
 }

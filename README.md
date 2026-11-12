@@ -1,8 +1,8 @@
 # ETHO MULTI-BOT HUB & DASHBOARD PRO
 
-Sistema integral de WhatsApp: **Backend (Node.js 22.13+ y Baileys Multi-Instancia) + Frontend Web Reactivo SaaS + Base de Datos en Supabase (PostgreSQL) + SQLite Local Nativo**.
+Sistema integral de WhatsApp: **Backend (Node.js 22.13+ y Baileys Multi-Instancia) + Frontend Web Reactivo SaaS + Almacenamiento Local Nativo (Zero Config)**.
 
-Permite desplegar y controlar múltiples bots con diferentes números desde un panel visual ejecutivo, ver el código QR en vivo para vincular WhatsApp, crear bots con 4 facetas (Recreativo, Asistente, Asesor, IA Autónoma), gestionar catálogo de productos, capturar prospectos (CRM Leads), horarios de atención, transferencia a asesor humano (#asesor), probar en el simulador de chat en vivo y registrar toda la actividad en Supabase en tiempo real.
+Permite desplegar y controlar múltiples bots con diferentes números desde un panel visual ejecutivo, ver el código QR en vivo para vincular WhatsApp, crear bots con 4 facetas (Recreativo, Asistente, Asesor, IA Autónoma), gestionar catálogo de productos, capturar prospectos (CRM Leads), horarios de atención, transferencia a asesor humano (#asesor), probar en el simulador de chat en vivo y registrar toda la actividad en tiempo real.
 
 ---
 
@@ -23,7 +23,7 @@ Panel en `http://localhost:3000`. Guía completa en [docs/TERMUX.md](docs/TERMUX
 ### 1. 🏛️ Panel de Control SaaS (Web Dashboard)
 - Acceso desde cualquier navegador en `http://localhost:3000`.
 - Diseño **Executive SaaS** con barra lateral (*Sidebar*), migas de pan (*Breadcrumbs*), modo oscuro (*Dark Mode*) y 100% responsivo para móviles con barra inferior táctil.
-- Estado del servidor y sincronización con Supabase en tiempo real mediante **Server-Sent Events (SSE)**.
+- Estado del servidor en tiempo real mediante **Server-Sent Events (SSE)**.
 
 ### 2. 🎭 Wizard de Creación con 4 Facetas de Bot
 - **🎮 Recreativo & Grupos (Estilo Etho)**: Los 219 comandos de economía, ruleta, anime, gacha, stickers y juegos.
@@ -52,9 +52,9 @@ Panel en `http://localhost:3000`. Guía completa en [docs/TERMUX.md](docs/TERMUX
 - Crea comandos personalizados (`#promo`), texto exacto o palabras clave.
 - Variables dinámicas: `{user}` (etiqueta al usuario), `{name}` (nombre), `{date}`, `{time}`, `{bot}`.
 
-### 8. ☁️ Sincronización en Tiempo Real con Supabase
-- Sincroniza en la nube: bots, logs de actividad, prospectos, catálogo, reglas, usuarios y grupos.
-- Script SQL listo para ejecutar en `supabase/schema.sql`.
+### 8. ⚡ Almacenamiento Local Autónomo (Zero Config)
+- Funciona directamente sin requerir configurar bases de datos externas ni cuentas de terceros.
+- Base de datos SQLite local rápida y persistente en `data/bot.db`.
 
 ---
 
@@ -66,13 +66,12 @@ src/
   server.js         API REST, SSE y autenticación
   manager.js        Gestor multi-instancia de Baileys
   handler.js        Procesamiento de mensajes
-  db.js             SQLite (node:sqlite) + espejo Supabase
+  db.js             Almacenamiento local SQLite (node:sqlite)
   commands/         Comandos por categoría
   lib/              IA, auth, planes, facturación, tickets, mantenimiento, utilidades
   routes/           Rutas de pagos y de tickets
   web/public/       Frontend (único origen: index.html, app.js, style.css, PWA)
 scripts/            check.js (valida comandos), banner.js
-supabase/           schema.sql
 docs/DEPLOY.md      Guía de despliegue
 ```
 

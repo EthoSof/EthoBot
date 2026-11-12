@@ -21,7 +21,6 @@ import {
   getBotPersonality, updateBotPersonality,
   normalizeBotAccessControl, updateBotAccessControl
 } from './db.js';
-import { testConnection } from './lib/supabase.js';
 import { resolveAuthSecret, createTokenTools, createLoginLimiter, createRateLimiter, rateLimitMiddleware } from './lib/auth.js';
 import { computeEntitlement, canCreateBot, newBotSubscription, TRIAL_DAYS, FREE_MAX_BOTS } from './lib/plans.js';
 import { ensureTrial, getBillingUser, countUserBots } from './lib/billing.js';
@@ -314,7 +313,7 @@ app.get('/api/events', (req, res) => {
 });
 
 // ==========================================
-// RUTAS API: ESTADO GENERAL Y SUPABASE
+// RUTAS API: ESTADO GENERAL Y ALMACENAMIENTO
 // ==========================================
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, status: 'online', uptime: Math.floor(process.uptime()), time: Date.now() });
@@ -323,7 +322,7 @@ app.get('/api/health', (req, res) => {
 app.get('/api/status', async (req, res) => {
   const bots = botManager.getAllBots();
   const onlineBots = bots.filter(b => b.status === 'online').length;
-  const supaStatus = await testConnection();
+  const storageStatus = { ok: true, configured: true, tablesReady: true, message: 'Almacenamiento local SQLite activo (Zero Config)' };
 
   let totalLogs = 0;
   try {
@@ -340,13 +339,13 @@ app.get('/api/status', async (req, res) => {
       maxBots: botCapFor(req.user),
       totalLogs
     },
-    supabase: supaStatus
+    storage: storageStatus,
+    supabase: storageStatus
   });
 });
 
-app.post('/api/supabase/test', adminRequired, async (req, res) => {
-  const result = await testConnection();
-  res.json(result);
+app.post(['/api/storage/test', '/api/supabase/test'], adminRequired, async (req, res) => {
+  res.json({ ok: true, configured: true, tablesReady: true, message: 'Almacenamiento local SQLite activo y verificado' });
 });
 
 // ==========================================

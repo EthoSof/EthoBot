@@ -10,9 +10,8 @@ import {
   addRecado, listRecados, toggleAutoPilot, filterForbiddenWords,
   isChatAllowedForBot, updateBotAccessControl
 } from './db.js';
-import { triggerWebhook } from './lib/supabase.js';
 import { commands } from './commands/index.js';
-import { jidNorm, jidNum, rand, sleep, timeLeft } from './lib/utils.js';
+import { jidNorm, jidNum, rand, sleep, timeLeft, triggerWebhook } from './lib/utils.js';
 import { getMeta, clearMeta, isAdminOf, botIsAdmin } from './lib/group.js';
 import { skin, card, noEmoji, SEP_BOLD, SEP_LINE, SEP_DOT } from './lib/ui.js';
 import { splitMessage, typingDelay } from './lib/format.js';
@@ -407,7 +406,7 @@ export async function handle(rawSock, msg, botContext = {}) {
     });
   }
 
-  // Registrar mensaje entrante en base de datos local y Supabase
+  // Registrar mensaje entrante en base de datos local
   if (text) {
     addBotLog({
       botId,

@@ -12,14 +12,6 @@ import path from 'path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'url';
 import { config } from './config.js';
-import {
-  syncUser as supaSyncUser, syncGroup as supaSyncGroup, syncBot as supaSyncBot,
-  logActivity as supaLogActivity, syncCustomFunction as supaSyncCustomFn,
-  deleteCustomFunction as supaDeleteCustomFn, syncLead as supaSyncLead,
-  deleteLead as supaDeleteLead, syncProduct as supaSyncProduct,
-  deleteProduct as supaDeleteProduct, syncPlatformUser as supaSyncPlatformUser,
-  deletePlatformUserFromSupabase as supaDeletePlatformUser
-} from './lib/supabase.js';
 
 class SQLiteWrapper {
   constructor(filePath) {
@@ -410,7 +402,6 @@ export function setUser(jid, fields) {
   const keys = Object.keys(fields);
   if (!keys.length) return;
   db.prepare(`UPDATE users SET ${keys.map((k) => `${k}=@${k}`).join(',')} WHERE jid=@jid`).run({ ...fields, jid });
-  supaSyncUser(jid, fields);
 }
 
 export function bumpInteraction(action, x, y) {
@@ -429,7 +420,6 @@ export function setGroup(jid, fields) {
   const keys = Object.keys(fields);
   if (!keys.length) return;
   db.prepare(`UPDATE groups SET ${keys.map((k) => `${k}=@${k}`).join(',')} WHERE jid=@jid`).run({ ...fields, jid });
-  supaSyncGroup(jid, fields);
 }
 
 // ==========================================
@@ -566,7 +556,6 @@ export function upsertBot(botData) {
   }
 
   const updated = getBot(data.id);
-  supaSyncBot(updated);
   return updated;
 }
 
@@ -576,8 +565,6 @@ export function setBotStatus(id, status, qr = null, pairingCode = null) {
   const now = Date.now();
   db.prepare('UPDATE bots SET status=?, qr_code=?, pairing_code=?, updated_at=? WHERE id=?')
     .run(status, qr, pairingCode, now, id);
-  const updated = getBot(id);
-  supaSyncBot(updated);
 }
 
 export function deleteBot(id) {
@@ -748,16 +735,6 @@ export function addBotLog({ botId, type, chatJid = '', senderJid = '', senderNam
     INSERT INTO bot_logs (bot_id, type, chat_jid, sender_jid, sender_name, content, details, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `).run(botId || 'default', type, chatJid, senderJid, senderName, content, detStr, now);
-
-  supaLogActivity({
-    botId: botId || 'default',
-    type,
-    chatJid,
-    senderJid,
-    senderName,
-    content,
-    details
-  });
 }
 
 export function getBotLogs({ limit = 100, botId = null, type = null, search = '' } = {}) {
@@ -838,13 +815,11 @@ export function upsertCustomFunction(fn) {
   }
 
   const updated = getCustomFunction(id);
-  supaSyncCustomFn(updated);
   return updated;
 }
 
 export function deleteCustomFunction(id) {
   db.prepare('DELETE FROM bot_custom_functions WHERE id=?').run(id);
-  supaDeleteCustomFn(id);
 }
 
 function safeJsonParse(str, fallback) {
@@ -878,7 +853,6 @@ export function addLead(lead) {
       interest=excluded.interest, notes=excluded.notes, status=excluded.status
   `).run(data);
   const updated = db.prepare('SELECT * FROM bot_leads WHERE id=?').get(id);
-  supaSyncLead(updated);
   return updated;
 }
 
@@ -908,13 +882,11 @@ export function updateLeadStatus(id, status, notes = null) {
     db.prepare('UPDATE bot_leads SET status=? WHERE id=?').run(status, id);
   }
   const updated = db.prepare('SELECT * FROM bot_leads WHERE id=?').get(id);
-  if (updated) supaSyncLead(updated);
   return updated;
 }
 
 export function deleteLead(id) {
   db.prepare('DELETE FROM bot_leads WHERE id=?').run(id);
-  supaDeleteLead(id);
 }
 
 // ==========================================
@@ -944,7 +916,6 @@ export function addProduct(prod) {
       is_active=excluded.is_active
   `).run(data);
   const updated = db.prepare('SELECT * FROM bot_products WHERE id=?').get(id);
-  supaSyncProduct(updated);
   return { ...updated, is_active: Boolean(updated.is_active) };
 }
 
@@ -964,7 +935,6 @@ export function listProducts(botId = null) {
 
 export function deleteProduct(id) {
   db.prepare('DELETE FROM bot_products WHERE id=?').run(id);
-  supaDeleteProduct(id);
 }
 
 export function listKnowledge(botId = null) {
@@ -1062,7 +1032,6 @@ export function createPlatformUser({ username, password, name, email = '', whats
     VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?)
   `).run(id, username.toLowerCase().trim(), email.trim(), password_hash, name.trim(), role, whatsapp.trim(), now);
   const user = getPlatformUserById(id);
-  if (user) supaSyncPlatformUser({ ...user, password_hash });
   return user;
 }
 
@@ -1103,14 +1072,12 @@ export function updatePlatformUser(id, fields) {
     UPDATE platform_users SET name=?, email=?, whatsapp=?, status=?, role=? WHERE id=?
   `).run(name, email, whatsapp, status, role, id);
   const updated = getPlatformUserById(id);
-  if (updated) supaSyncPlatformUser(updated);
   return updated;
 }
 
 export function deletePlatformUser(id) {
   db.prepare('DELETE FROM platform_users WHERE id=?').run(id);
   db.prepare('DELETE FROM bots WHERE owner_id=?').run(id);
-  supaDeletePlatformUser(id);
 }
 
 export function initDefaultAdmin() {
@@ -1126,8 +1093,6 @@ export function initDefaultAdmin() {
       INSERT INTO platform_users (id, username, email, password_hash, name, role, whatsapp, status, created_at)
       VALUES (?, ?, 'admin@etho.local', ?, 'Administrador Master', 'admin', '', 'active', ?)
     `).run(adminId, adminUser, pwdHash, Date.now());
-    const seeded = getPlatformUserById(adminId);
-    if (seeded) supaSyncPlatformUser({ ...seeded, password_hash: pwdHash });
     const passHint = generatedPass ? `${generatedPass}  (generada ahora; cámbiala o define ADMIN_PASSWORD)` : '[definida en ADMIN_PASSWORD]';
     console.log(`[Auth] 👑 Usuario Administrador inicial creado: Usuario = ${adminUser} | Contraseña = ${passHint}`);
   }
